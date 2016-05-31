@@ -12,6 +12,7 @@
 		2787F02C1CF853DC006CF5F6 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2787F02B1CF853DC006CF5F6 /* Config.swift */; };
 		279E8BB71CFD4E7F00046564 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 279F56A81CFD4D2000BF33DF /* iconfont.ttf */; };
 		279E8BB91CFD8E5000046564 /* UserDetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279E8BB81CFD8E5000046564 /* UserDetailCell.swift */; };
+		279E8BBD1CFD9E6700046564 /* Readme.md in Sources */ = {isa = PBXBuildFile; fileRef = 279E8BBC1CFD9E6700046564 /* Readme.md */; };
 		27A2D2FC1CF846C0002B377D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A2D2FB1CF846C0002B377D /* AppDelegate.swift */; };
 		27A2D2FE1CF846C0002B377D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A2D2FD1CF846C0002B377D /* ViewController.swift */; };
 		27A2D3011CF846C0002B377D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 27A2D2FF1CF846C0002B377D /* Main.storyboard */; };
@@ -36,6 +37,7 @@
 		2730281B1CFC751F00B019FB /* PeopleDetailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeopleDetailCell.swift; sourceTree = "<group>"; };
 		2787F02B1CF853DC006CF5F6 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		279E8BB81CFD8E5000046564 /* UserDetailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDetailCell.swift; sourceTree = "<group>"; };
+		279E8BBC1CFD9E6700046564 /* Readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
 		279F56A81CFD4D2000BF33DF /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iconfont.ttf; sourceTree = "<group>"; };
 		27A2D2F81CF846C0002B377D /* xiaoyuantong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = xiaoyuantong.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		27A2D2FB1CF846C0002B377D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -73,6 +75,7 @@
 		27A2D2EF1CF846C0002B377D = {
 			isa = PBXGroup;
 			children = (
+				279E8BBC1CFD9E6700046564 /* Readme.md */,
 				27A2D2FA1CF846C0002B377D /* xiaoyuantong */,
 				27A2D2F91CF846C0002B377D /* Products */,
 			);
@@ -230,6 +233,7 @@
 				27A2D3111CF84780002B377D /* Upload.swift in Sources */,
 				279E8BB91CFD8E5000046564 /* UserDetailCell.swift in Sources */,
 				2787F02C1CF853DC006CF5F6 /* Config.swift in Sources */,
+				279E8BBD1CFD9E6700046564 /* Readme.md in Sources */,
 				27E4DF921CF8A64000D99321 /* FriendCell.swift in Sources */,
 				27E4DF8D1CF89F9900D99321 /* Group.swift in Sources */,
 				2730281C1CFC751F00B019FB /* PeopleDetailCell.swift in Sources */,

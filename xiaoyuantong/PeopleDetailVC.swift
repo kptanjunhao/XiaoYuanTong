@@ -41,10 +41,15 @@ class PeopleDetailVC: MainVC,UITableViewDelegate,UITableViewDataSource,UITextFie
         topImageView.contentMode = UIViewContentMode.ScaleAspectFill
         self.tableView.tableHeaderView = UIView(frame: CGRectMake(0,0,screen.width,170))
         self.tableView.tableHeaderView!.addSubview(topImageView)
-        print(self.tableView.tableHeaderView?.frame.height)
+        if intend == "modify"{
+            
+        }
         
         
         
+    }
+    
+    func selectImage(){
         
     }
     
