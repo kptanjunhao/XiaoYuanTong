@@ -16,85 +16,65 @@ class UserDetailCell: UITableViewCell {
     var vc:PeopleDetailVC!
     
     
+    
     init(row:Int,friendInfo:NSArray,vc:PeopleDetailVC){
         self.row = row
         self.vc = vc
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier: nil)
         self.selectionStyle = UITableViewCellSelectionStyle.None
+        nameLabel = UILabel(frame: CGRectMake(15,10,100,20))
+        nameLabel.font = UIFont.systemFontOfSize(16)
+        nameLabel.textColor = UIColor.lightGrayColor()
+        infoLabel = UITextField(frame: CGRectMake(90,10,screen.width-100,20))
         switch row {
         case 0:
-            nameLabel = UILabel(frame: CGRectMake(15,10,40,20))
-            nameLabel.font = UIFont.systemFontOfSize(16)
             nameLabel.text = "姓名"
-            nameLabel.textColor = UIColor.lightGrayColor()
-            infoLabel = UITextField(frame: CGRectMake(90,10,screen.width-100,20))
             infoLabel.font = UIFont.italicSystemFontOfSize(17)
             infoLabel.text = "\(friendInfo[1])"
-            self.addSubview(nameLabel)
-            self.addSubview(infoLabel)
+            infoLabel.tag = 1
         case 1:
-            nameLabel = UILabel(frame: CGRectMake(15,10,100,20))
-            nameLabel.font = UIFont.systemFontOfSize(16)
             nameLabel.text = "个性签名"
-            nameLabel.textColor = UIColor.lightGrayColor()
-            infoLabel = UITextField(frame: CGRectMake(90,10,screen.width-100,20))
             infoLabel.font = UIFont.italicSystemFontOfSize(17)
-            infoLabel.text = "\(friendInfo[5])"
-            self.addSubview(nameLabel)
-            self.addSubview(infoLabel)
+            if (friendInfo[5] as! String) == "这家伙很懒，没有留下签名"{
+                infoLabel.text =  ""
+                infoLabel.placeholder = (friendInfo[5] as! String)
+            }else{
+                infoLabel.text = (friendInfo[5] as! String)
+            }
+            infoLabel.tag = 5
         case 2:
-            nameLabel = UILabel(frame: CGRectMake(15,10,40,20))
-            nameLabel.font = UIFont.systemFontOfSize(16)
             nameLabel.text = "电话"
-            nameLabel.textColor = UIColor.lightGrayColor()
-            infoLabel = UITextField(frame: CGRectMake(90,10,screen.width-100,20))
             infoLabel.font = UIFont.systemFontOfSize(14)
             infoLabel.text = "\(friendInfo[3])"
-            self.addSubview(nameLabel)
-            self.addSubview(infoLabel)
+            infoLabel.tag = 3
         case 3:
-            nameLabel = UILabel(frame: CGRectMake(15,10,100,20))
-            nameLabel.font = UIFont.systemFontOfSize(16)
             nameLabel.text = "账号信息"
-            nameLabel.textColor = UIColor.lightGrayColor()
-            infoLabel = UITextField(frame: CGRectMake(90,10,screen.width-100,20))
             infoLabel.enabled = false
             infoLabel.textColor = UIColor.lightGrayColor()
             infoLabel.font = UIFont.systemFontOfSize(17)
             infoLabel.text = "\(friendInfo[2])"
-            self.addSubview(nameLabel)
-            self.addSubview(infoLabel)
         case 4,5,6:
-            nameLabel = UILabel(frame: CGRectMake(15,10,100,20))
-            nameLabel.font = UIFont.systemFontOfSize(16)
-            nameLabel.textColor = UIColor.lightGrayColor()
-            infoLabel = UITextField(frame: CGRectMake(90,10,screen.width-100,20))
             infoLabel.font = UIFont.systemFontOfSize(17)
             switch row {
             case 5:
                 nameLabel.text = "QQ"
                 infoLabel.text = "\(friendInfo[11])"
-                if infoLabel.text! == "这家伙没有填QQ号"{
-                    infoLabel.text = ""
-                }
+                infoLabel.tag = 11
             case 6:
                 nameLabel.text = "微信"
                 infoLabel.text = "\(friendInfo[12])"
-                if infoLabel.text! == "这家伙没有填微信号"{
-                    infoLabel.text = ""
-                }
+                infoLabel.tag = 12
             default:
                 nameLabel.text = "年级信息"
-                infoLabel.text = "\(friendInfo[9])"
+                infoLabel.text = (friendInfo[9] as! String) == "" ? "不可用" : friendInfo[9] as! String
                 infoLabel.enabled = false
                 infoLabel.textColor = UIColor.lightGrayColor()
             }
-            
-            self.addSubview(nameLabel)
-            self.addSubview(infoLabel)
         default:
             return
         }
+        self.addSubview(nameLabel)
+        self.addSubview(infoLabel)
         infoLabel.delegate = vc
     }
     
@@ -119,6 +99,9 @@ class UserDetailCell: UITableViewCell {
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if vc.editingTextField != nil{
+            if vc.editingTextField.tag != 0{
+                vc.textFieldEndEditing(vc.editingTextField.tag)
+            }
             vc.editingTextField.resignFirstResponder()
             vc.editingTextField = nil
         }

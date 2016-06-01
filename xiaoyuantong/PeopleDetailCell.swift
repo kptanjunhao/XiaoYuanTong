@@ -129,13 +129,10 @@ class PeopleDetailCell: UITableViewCell {
     //12   var weixin:String!
     
     func copyAction(sender:UIMenuItem){
-        switch self.row{
-        case 0:
+        if self.row == 0{
             UIPasteboard.generalPasteboard().string = nameLabel.text! + infoLabel.text!
-        case 1,2,3,4,5,6:
+        }else{
             UIPasteboard.generalPasteboard().string = infoLabel.text!
-        default:
-            break
         }
         print(UIPasteboard.generalPasteboard().string)
     }
@@ -161,11 +158,6 @@ class PeopleDetailCell: UITableViewCell {
             next = next!.superview
         }
         
-    }
-    
-    func setUp(row:Int,friendInfo:NSArray){
-        nameLabel.text = friendInfo[1] as? String
-        infoLabel.text = "\(friendInfo[8])  \(friendInfo[6])  \(friendInfo[7])"
     }
     
     var touchPosition:CGPoint!

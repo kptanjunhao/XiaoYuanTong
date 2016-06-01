@@ -42,18 +42,18 @@ class Friend{
     
     init(result:AnyObject){
         self.isRegister = result.objectForKey("isregister") as? Bool ?? false
-        self.phone = result.objectForKey("userphone") as? String ?? "这家伙没有留下电话"
+        self.phone = result.objectForKey("userphone") as? String ?? ""
         self.realname = result.objectForKey("userrealname") as? String ?? "获取姓名失败"
-        self.signature = result.objectForKey("usersignature") as? String ?? "这个家伙很懒，没有留下签名"
+        self.signature = result.objectForKey("usersignature") as? String ?? "这家伙很懒，没有留下签名"
         self.username = result.objectForKey("userid") as? String ?? "0"
         self.usericon = Config.url + "faces/" + self.username + ".jpg"
-        self.classname = result.objectForKey("classname") as? String ?? "这家伙没有留下班级信息"
-        self.departmentname = result.objectForKey("departmentname") as? String ?? "这家伙没有系别信息"
+        self.classname = result.objectForKey("classname") as? String ?? ""
+        self.departmentname = result.objectForKey("departmentname") as? String ?? ""
         self.gender = result.objectForKey("gender") as? String ?? ""
         self.nickname = result.objectForKey("nickname") as? String ?? ""
-        self.year = result.objectForKey("year") as? String ?? "这家伙没有填写年级"
-        self.qq = result.objectForKey("userqq") as? String ?? "这家伙没有填QQ号"
-        self.weixin = result.objectForKey("userweixin") as? String ?? "这家伙没有填微信号"
+        self.year = result.objectForKey("year") as? String ?? ""
+        self.qq = result.objectForKey("userqq") as? String ?? ""
+        self.weixin = result.objectForKey("userweixin") as? String ?? ""
     }
     
     func visibleAttrAndValue() -> NSDictionary{
@@ -65,7 +65,7 @@ class Friend{
         return attrAndValue
     }
     
-    func visibleValue() -> NSArray{
+    func visibleValue() -> NSMutableArray{
         let mirror = Mirror(reflecting:self)
         let Values = NSMutableArray()
         for case let (_,attrValue) in mirror.children {
