@@ -23,6 +23,7 @@ class Friend{
     var qq:String!
     var weixin:String!
     
+    var selected = false
     
     
     

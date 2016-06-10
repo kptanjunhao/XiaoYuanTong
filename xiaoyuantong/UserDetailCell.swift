@@ -75,6 +75,14 @@ class UserDetailCell: UITableViewCell {
         }
         self.addSubview(nameLabel)
         self.addSubview(infoLabel)
+        let seperateLine = UIView()
+        seperateLine.translatesAutoresizingMaskIntoConstraints = false
+        seperateLine.backgroundColor = UIColor.lightGrayColor()
+        self.addSubview(seperateLine)
+        NSLayoutConstraint(item: seperateLine, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 0).active = true
+        NSLayoutConstraint(item: seperateLine, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: 0).active = true
+        NSLayoutConstraint(item: seperateLine, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0).active = true
+        NSLayoutConstraint(item: seperateLine, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.Height, multiplier: 1, constant: 1).active = true
         infoLabel.delegate = vc
     }
     

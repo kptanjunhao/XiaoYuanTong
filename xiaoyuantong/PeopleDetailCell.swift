@@ -87,6 +87,11 @@ class PeopleDetailCell: UITableViewCell {
             self.addSubview(nameLabel)
             self.addSubview(registerLabel)
             self.addSubview(infoLabel)
+            
+            let leaveMsgBtn = FunctionalButton(frame: CGRectMake(screen.width-90,10,30,30), fontName: "iconfont", fontSize: 30, normalTitle: "\u{e60e}", highlightedTitle: "\u{e60f}", titleColor: Config.mainColor, target: self, action: #selector(self.leaveMessage))
+            self.addSubview(leaveMsgBtn)
+            let deleteBtn = FunctionalButton(frame: CGRectMake(screen.width-45,10,30,30), fontName: "iconfont", fontSize: 30, normalTitle: "\u{e60d}", highlightedTitle: "\u{e60d}", titleColor: UIColor.redColor(), target: self, action: #selector(self.deleteFriend))
+            self.addSubview(deleteBtn)
         case 4,5,6:
             nameLabel = UILabel(frame: CGRectMake(15,10,200,20))
             nameLabel.font = UIFont.systemFontOfSize(16)
@@ -137,6 +142,59 @@ class PeopleDetailCell: UITableViewCell {
         print(UIPasteboard.generalPasteboard().string)
     }
     
+    func leaveMessage(){
+        var vc:PeopleDetailVC?
+        let username = NSUserDefaults.standardUserDefaults().valueForKey("username") as! String
+        var next = self.superview
+        while next != nil {
+            let nextResponder = next!.nextResponder()
+            if nextResponder!.isKindOfClass(PeopleDetailVC.classForCoder()){
+                vc = (nextResponder as! PeopleDetailVC)
+            }
+            next = next!.superview
+        }
+        if let vc = vc{
+            let leavemsgAlert = UIAlertController(title: "留言", message: "", preferredStyle: UIAlertControllerStyle.Alert)
+            leavemsgAlert.addTextFieldWithConfigurationHandler { (textField) -> Void in
+                textField.placeholder = "给他讲两句"
+            }
+            let ok = UIAlertAction(title: "发送", style: UIAlertActionStyle.Default) { (ok) -> Void in
+                let alert2 = UIAlertController(title: "提示", message: "发送成功", preferredStyle: UIAlertControllerStyle.Alert)
+                vc.presentViewController(alert2, animated: true, completion: {
+                    let friendid = self.infoLabel.text!
+                    alert2.dismissViewControllerAnimated(true, completion: nil)
+                    Request.getRequestXYTFormat(Config.url+"leavemessage", requestTimeOut: 5, tag: Config.LEAVE_MSG_TAG, datas: ("from",username),("to",friendid),("text",leavemsgAlert.textFields![0].text!))
+                })
+            }
+            leavemsgAlert.addAction(ok)
+            let cancel = UIAlertAction(title: "取消", style: UIAlertActionStyle.Cancel, handler: nil)
+            leavemsgAlert.addAction(cancel)
+            vc.presentViewController(leavemsgAlert, animated: true, completion: nil)
+        }
+        
+    }
+    
+    func deleteFriend(){
+        var vc:PeopleDetailVC?
+        var next = self.superview
+        while next != nil {
+            let nextResponder = next!.nextResponder()
+            if nextResponder!.isKindOfClass(PeopleDetailVC.classForCoder()){
+                vc = (nextResponder as! PeopleDetailVC)
+            }
+            next = next!.superview
+        }
+        if let vc = vc{
+            let alert = UIAlertController(title: "删除好友", message: "确定将 \(vc.friendInfo[1]) 移出你的好友列表吗？", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "确定", style: UIAlertActionStyle.Destructive, handler: { (_) in
+                //删除username=infoLabel.text
+            }))
+            alert.addAction(UIAlertAction(title: "取消", style: UIAlertActionStyle.Cancel, handler: nil))
+            vc.presentViewController(alert, animated: true, completion: nil)
+        }
+        
+    }
+    
     func msg(){
         let url = NSURL(string: "sms://\(infoLabel.text!)")
         UIApplication.sharedApplication().openURL(url!)
@@ -162,6 +220,9 @@ class PeopleDetailCell: UITableViewCell {
     
     var touchPosition:CGPoint!
     func longPress(sender:UILongPressGestureRecognizer){
+        if touchPosition == nil{
+            return
+        }
         if sender.state == UIGestureRecognizerState.Began{
             self.becomeFirstResponder()
             let copyItem = UIMenuItem(title: "复制", action: #selector(self.copyAction(_:)))

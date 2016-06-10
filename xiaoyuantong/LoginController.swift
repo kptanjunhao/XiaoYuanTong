@@ -200,7 +200,7 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         self.presentViewController(alert, animated: true, completion: nil)
         //异步开始发送网络请求
         dispatch_async(dispatch_get_global_queue(-2, 0)) {
-            let data = Request.getRequestXYTFormat(Config.url+"login", requestTimeOut: 5, tag: -9, datas: ("username", username),("password",password))
+            let data = Request.getRequestXYTFormat(Config.url+"login", requestTimeOut: 5, tag: Config.LOGIN_TAG, datas: ("username", username),("password",password))
             dispatch_sync(dispatch_get_main_queue(), {
                 alert.dismissViewControllerAnimated(true, completion: {
                     if let nsstr = NSString(data: data!, encoding: NSUTF8StringEncoding){

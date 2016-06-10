@@ -131,7 +131,7 @@ public class Log:Request{
         -   Bool: 日志是否上传成功
      */
     public static func uploadLog(data:NSMutableData) -> Bool{
-        if let returnData = super.request(data, url: NSURL(string: Config.url+"upload-log")!, HTTPMethodIsGet: false,tag:count){
+        if let returnData = super.request(data, url: NSURL(string: Config.url+"upload-log")!, HTTPMethodIsGet: false,tag:Config.UPLOAD_LOG_TAG){
             print(NSString(data: returnData, encoding: NSUTF8StringEncoding))
             let returnStr = NSString(data: returnData, encoding: NSUTF8StringEncoding)! as String
             if returnStr.containsString("成功"){

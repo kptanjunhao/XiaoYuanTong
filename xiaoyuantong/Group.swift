@@ -14,20 +14,21 @@ class Group{
     var registerCount:Int
     var totleCount:Int
     var friends:[Friend]?
-    var friendsTemp:[Friend]?
-    var isClose = true{
-        willSet{
-            if newValue{
-                friendsTemp = friends
-                friends = [Friend]()
-            }else{
-                if friendsTemp != nil{
-                    friends = friendsTemp
-                    friendsTemp = nil
-                }
-            }
-        }
-    }
+    var isClose = true
+//    var isClose = true{
+//        willSet{
+//            if newValue{
+//                friendsTemp = friends
+//                friends = [Friend]()
+//            }else{
+//                if friendsTemp != nil{
+//                    friends = friendsTemp
+//                    friendsTemp = nil
+//                }
+//            }
+//        }
+//    }
+    var selected = false
     init(groupName:AnyObject){
         self.groupName = groupName.objectForKey("groupName") as! String
         self.registerCount = groupName.objectForKey("registerCount") as? Int ?? 0
@@ -40,6 +41,19 @@ class Group{
         for friend in friends{
             self.friends?.append(Friend.init(friendObj: friend))
         }
+    }
+    
+    func getFriend(username:String) -> Friend?{
+        if friends == nil{
+            return nil
+        }else{
+            for friend in friends!{
+                if friend.username == username{
+                    return friend
+                }
+            }
+        }
+        return nil
     }
 }
 
@@ -54,5 +68,26 @@ class GroupList{
             group.getFriends(result)
             self.groups.append(group)
         }
+    }
+    
+    func getFriend(username:String) -> Friend?{
+        for group in groups{
+            if let friend = group.getFriend(username){
+                return friend
+            }
+        }
+        return nil
+    }
+    
+    func getRealnameByUsername(username:String) -> String?{
+        return self.getFriend(username)?.realname
+    }
+    
+    func getRealnameByUsername(usernames:[String]) -> [String]{
+        var realnames = [String]()
+        for username in usernames{
+            realnames.append(self.getFriend(username)?.realname ?? username)
+        }
+        return realnames
     }
 }

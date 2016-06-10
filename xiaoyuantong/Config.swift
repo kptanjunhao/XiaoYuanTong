@@ -11,6 +11,20 @@ import UIKit
 public class Config{
     static let mainColor = UIColor(red:0.17, green:0.75, blue:0.90, alpha:1.00)
     static let url = "http://121.42.12.12:8080/xyt/"
+    
+    static let UPLOAD_LOG_TAG = -1
+    static let LOGIN_TAG = 1
+    static let GET_GROUPS_TAG = 2
+    static let GET_USERINFO_TAG = 3
+    static let UPLOADICON_TAG = 4
+    static let UPDATE_INFO_TAG = 5
+    static let GET_RECMSG_TAG = 6
+    static let GET_SENDMSG_TAG = 7
+    static let SEND_NOTICE_TAG = 8
+    static let LEAVE_MSG_TAG = 9
+    static let GET_NOTICEDETAIL_TAG = 10
+    
+    
 }
 
 

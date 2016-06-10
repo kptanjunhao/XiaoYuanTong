@@ -8,6 +8,82 @@
 
 import UIKit
 
+class SelectHeaderView: HeaderView {
+    var group:Group!
+    var selectedButton:UIButton!
+    var vc:CreateNoticeVC!
+    var tableView:UITableView!
+
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        selectedButton = UIButton(frame: CGRectMake(screen.width-75,7,60,30))
+        selectedButton.layer.cornerRadius = 8
+        selectedButton.backgroundColor = Config.mainColor
+        selectedButton.titleLabel?.font = UIFont.systemFontOfSize(14)
+        selectedButton.addTarget(self, action: #selector(self.selected(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        self.addSubview(selectedButton)
+    }
+    
+    func selected(sender:UIButton){
+        if let friends = group.friends{
+            group.selected = !group.selected
+            if group.selected{
+                for friend in friends{
+                    if vc.selectedUsername.indexOf(friend.username) == nil{
+                        vc.selectedUsername.append(friend.username)
+                    }
+                    friend.selected = true
+                }
+            }else{
+                for friend in friends{
+                    if let index = vc.selectedUsername.indexOf(friend.username){
+                        vc.selectedUsername.removeAtIndex(index)
+                    }
+                    friend.selected = false
+                }
+                
+            }
+            self.tableView.reloadData()
+        }
+        
+    }
+    
+    func cancelSelected(){
+        var selectedCount = 0
+        if let friends = group.friends{
+            for friend in friends{
+                if friend.selected{
+                    selectedCount += 1
+                }
+            }
+            if selectedCount == friends.count{
+                group.selected = true
+                selectedButton.setTitle("取消全选", forState: UIControlState.Normal)
+                return
+            }
+        }
+        group.selected = false
+        selectedButton.setTitle("全部选择", forState: UIControlState.Normal)
+    }
+    
+    func setUp(groupName: String, section: Int, height: CGFloat, isClose: Bool, group:Group, vc:CreateNoticeVC, tableView:UITableView) {
+        super.setUp(groupName, section: section, height: height, isClose: isClose)
+        self.group = group
+        self.vc = vc
+        self.tableView = tableView
+        if group.selected{
+            selectedButton.setTitle("取消全选", forState: UIControlState.Normal)
+        }else{
+            selectedButton.setTitle("全部选择", forState: UIControlState.Normal)
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+}
+
 class HeaderView: UITableViewHeaderFooterView {
 
     /*
@@ -34,7 +110,6 @@ class HeaderView: UITableViewHeaderFooterView {
         groupNameLabel.font = UIFont.systemFontOfSize(15)
         self.addSubview(groupNameLabel)
         self.addSubview(statuView)
-        self.addGestureRecognizer(UIGestureRecognizer(target: self, action: #selector(self.touch)))
     }
     
     func setUp(groupName:String,section:Int,height:CGFloat,isClose:Bool){

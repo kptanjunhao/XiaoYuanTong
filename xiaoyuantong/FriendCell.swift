@@ -17,7 +17,7 @@ class FriendCell: UITableViewCell {
     override func setHighlighted(highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
         UIView.animateWithDuration(0.1) {
-            self.backgroundColor = !self.highlighted ? UIColor.clearColor() : UIColor.orangeColor()
+            self.backgroundColor = !self.highlighted ? UIColor.clearColor() : Config.mainColor
         }
     }
 

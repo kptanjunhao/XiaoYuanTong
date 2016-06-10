@@ -21,12 +21,12 @@ class ContactVC: MainVC,UITableViewDelegate,UITableViewDataSource {
         super.init(nibName: nil, bg: UIColor(red: 0.9375, green: 0.9375, blue: 0.9375, alpha: 1))
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.getData), name: "loginSuccess", object: nil)
-        self.title = "所有好友"
+        self.title = "好友列表"
         self.tabBarItem.image = imageWithIcon("\u{e609}", fontName: "iconfont", size: 34, color: UIColor.blackColor())
         self.tabBarItem.selectedImage = imageWithIcon("\u{e608}", fontName: "iconfont", size: 34, color: UIColor.blackColor())
         self.tabBarItem.title = "通讯录"
         
-        let toNotification = MenuButton(target: self, title: "通知", selector: #selector(self.hi(_:)))
+        let toNotification = MenuButton(target: self, title: "通知", selector: #selector(self.notification))
         let toModifyInfo = MenuButton(target: self, title: "修改资料", selector: #selector(self.modify))
         let toMessageBoard = MenuButton(target: self, title: "留言板", selector: #selector(self.hi(_:)))
         let toLogout = MenuButton(target: self, title: "注销", selector: #selector(self.login))
@@ -49,16 +49,12 @@ class ContactVC: MainVC,UITableViewDelegate,UITableViewDataSource {
         super.init(nibName: nil, bg: UIColor.clearColor())
     }
     
+    func notification(){
+        self.navigationController?.pushViewController(NotificationVC(username:self.username), animated: true)
+    }
+    
     func modify(){
-        var image:UIImage?
-        let imageURL = NSURL(string: Config.url + "faces/" + self.username + ".jpg")
-        if let imageData = NSData(contentsOfURL: imageURL!){
-            image = UIImage(data: imageData)
-            self.navigationController?.pushViewController(PeopleDetailVC(intend: "modify",peopleID: self.username,peopleIcon: image), animated: true)
-        }else{
-            self.navigationController?.pushViewController(PeopleDetailVC(intend: "modify",peopleID: self.username,peopleIcon: nil), animated: true)
-        }
-        
+        self.navigationController?.pushViewController(PeopleDetailVC(intend: "modify",peopleID: self.username), animated: true)
     }
     
     func login(){
@@ -70,6 +66,20 @@ class ContactVC: MainVC,UITableViewDelegate,UITableViewDataSource {
         self.tabBarController!.presentViewController(nav, animated: true, completion: nil)
     }
     
+    static func getGroupsList() -> GroupList?{
+        if let username = NSUserDefaults.standardUserDefaults().valueForKey("username"){
+            let groupsData = Request.getRequestXYTFormat(Config.url+"groups", requestTimeOut: 3, tag: Config.GET_GROUPS_TAG, datas: ("username",username as! String))
+            do{
+                return GroupList(result: try NSJSONSerialization.JSONObjectWithData(groupsData!, options: NSJSONReadingOptions.AllowFragments))
+                
+            }catch{
+                return nil
+            }
+        }else{
+            return nil
+        }
+    }
+    
     func getData(){
         dispatch_async(dispatch_get_global_queue(-2, 0), {
             if let username = NSUserDefaults.standardUserDefaults().valueForKey("username"){
@@ -77,7 +87,7 @@ class ContactVC: MainVC,UITableViewDelegate,UITableViewDataSource {
             }else{
                 return
             }
-            let groupsData = Request.getRequestXYTFormat(Config.url+"groups", requestTimeOut: 8, tag: 12, datas: ("username",self.username))
+            let groupsData = Request.getRequestXYTFormat(Config.url+"groups", requestTimeOut: 8, tag: Config.GET_GROUPS_TAG, datas: ("username",self.username))
             do{
                 let result = try NSJSONSerialization.JSONObjectWithData(groupsData!, options: NSJSONReadingOptions.AllowFragments)
                 self.groupList = GroupList(result: result)
@@ -115,23 +125,16 @@ class ContactVC: MainVC,UITableViewDelegate,UITableViewDataSource {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView = UITableView(frame: self.view.frame, style: UITableViewStyle.Plain)
+        refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(self.refresh), forControlEvents: UIControlEvents.ValueChanged)
+        self.tableView.addSubview(refreshControl)
         self.tableView.frame.size.height -= 112
+        self.tableView.separatorStyle = .None
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.registerNib(UINib(nibName: "FriendCell", bundle: nil), forCellReuseIdentifier: "FriendCell")
         self.tableView.registerClass(HeaderView.self, forHeaderFooterViewReuseIdentifier: "HeaderView")
         self.view.addSubview(self.tableView)
-        refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(self.refresh), forControlEvents: UIControlEvents.ValueChanged)
-        self.tableView.addSubview(refreshControl)
-        
-        
-        
-        if let isLogin = NSUserDefaults.standardUserDefaults().valueForKey("isLogin"){
-            if (isLogin as! Bool){
-                self.getData()
-            }
-        }
     }
     
     // MARK: - Refresh Data
@@ -179,19 +182,14 @@ class ContactVC: MainVC,UITableViewDelegate,UITableViewDataSource {
         self.tableView.beginUpdates()
         groupList!.groups[section].isClose = !groupList!.groups[section].isClose
         senderView.touch(groupList!.groups[section].isClose)
+        let countOfRow = groupList!.groups[section].friends!.count
+        var indexPaths = [NSIndexPath]()
+        for i in 0..<countOfRow{
+            indexPaths.append(NSIndexPath(forRow: i, inSection: section))
+        }
         if groupList!.groups[section].isClose{
-            let countOfRow = groupList!.groups[section].friendsTemp!.count
-            var indexPaths = [NSIndexPath]()
-            for i in 0..<countOfRow{
-                indexPaths.append(NSIndexPath(forRow: i, inSection: section))
-            }
             self.tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Fade)
         }else{
-            let countOfRow = groupList!.groups[section].friends!.count
-            var indexPaths = [NSIndexPath]()
-            for i in 0..<countOfRow{
-                indexPaths.append(NSIndexPath(forRow: i, inSection: section))
-            }
             self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Fade)
         }
         self.tableView.endUpdates()
@@ -199,7 +197,7 @@ class ContactVC: MainVC,UITableViewDelegate,UITableViewDataSource {
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = self.tableView.dequeueReusableHeaderFooterViewWithIdentifier("HeaderView") as! HeaderView
-        let groupName = groupList!.groups[section].groupName + " \((groupList!.groups[section].friendsTemp ?? groupList!.groups[section].friends!).count)位"
+        let groupName = groupList!.groups[section].groupName + " \(groupList!.groups[section].friends!.count)位"
         headerView.setUp(groupName, section: section, height: headerHeight,isClose: groupList!.groups[section].isClose)
         headerView.addGesture(UITapGestureRecognizer(target: self, action: #selector(self.sectionTap(_:))))
         return headerView
@@ -231,6 +229,8 @@ class ContactVC: MainVC,UITableViewDelegate,UITableViewDataSource {
                 groupList = nil
                 self.tableView.reloadData()
                 self.login()
+            }else{
+                self.getData()
             }
         }else{
             NSUserDefaults.standardUserDefaults().setValue(false, forKey: "isLogin")

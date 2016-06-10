@@ -111,6 +111,47 @@ public class Request {
         
     }
     
+    public static func getRequestByFiltering(urlstr:String, requestTimeOut:NSTimeInterval, tag:Int, parameters:(String,String)...) -> NSData?{
+        let semaphore = dispatch_semaphore_create(0)
+        var finalurl = urlstr
+        if parameters.count != 0{
+            finalurl += "?"
+            for parameter in parameters{
+                finalurl += "\(parameter.0)=\(parameter.1)"
+                if parameter != parameters[parameters.count - 1]{
+                    finalurl += "&"
+                }
+            }
+        }else{
+            
+        }
+        print("Filtering"+finalurl)
+        finalurl = finalurl.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet())!
+        let url = NSURL(string: finalurl)!
+        let request = NSMutableURLRequest(URL: url)
+        request.timeoutInterval = requestTimeOut
+        var returnData: NSData?
+        let dataTask = session.dataTaskWithRequest(request, completionHandler: {
+            (data, response, resperror) -> Void in
+            if resperror != nil{
+                print(resperror!)
+                returnData = resperror!.userInfo[NSLocalizedDescriptionKey]?.dataUsingEncoding(NSUTF8StringEncoding)!
+            }else{
+                returnData = data
+            }
+            dispatch_semaphore_signal(semaphore)
+            
+        })
+        tasks[tag] = dataTask
+        dataTask.resume()//启动线程
+        
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)//等待线程结束
+        return returnData
+        
+    }
+    
+    
+    
     public static func getRequestXYTFormat(urlstr:String, requestTimeOut:NSTimeInterval, tag:Int, datas:(String,String)...) -> NSData?{
         var parameter = "{"
         for data in datas{
